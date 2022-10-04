@@ -1,0 +1,100 @@
+<div style="text-align: center;"></cent><h1>liste des formations</h1></div>
+
+<table border="1">
+    <tr>
+        <th>
+            ref
+        </th>
+        <th>
+            titre
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            date_debut
+        </th>
+        <th>
+            date_fin
+        </th>
+        <th>
+            nbr participants
+        </th>
+    </tr>
+    {% for formation in listeFormations %}
+    <tr>
+        <td>
+            {{ formation.ref }}
+        </td>
+        <td>
+            {{ formation.Titre | upper }}
+        </td>
+        <td>
+            {{ formation.Description }}
+        </td>
+        <td>
+            {{ formation.date_debut }}
+        </td>
+        <td>
+            {{ formation.date_fin }}
+        </td>
+        <td>
+            {{ formation.nb_participants }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+<div style="text-align: center;"></cent><h1>liste des formations theorique</h1></div>
+{% if listeFormations is empty %}
+    <h4 style="color: red">table is empty</h4>
+{% else %}
+<table border="1">
+    <tr>
+        <th>
+            ref
+        </th>
+        <th>
+            titre
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            date_debut
+        </th>
+        <th>
+            date_fin
+        </th>
+        <th>
+            nbr participants
+        </th>
+    </tr>
+    {% for formation in listeFormations %}
+        {% if formation.Description =='formation theorique' %}
+        <tr>
+            <td>
+                {{ formation.ref }}
+            </td>
+            <td>
+                {{ formation.Titre | upper }}
+            </td>
+            <td>
+                {{ formation.Description }}
+            </td>
+            <td>
+                {{ formation.date_debut }}
+            </td>
+            <td>
+                {{ formation.date_fin }}
+            </td>
+            <td>
+                {{ formation.nb_participants }}
+            </td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+</table>
+{% endif %}
+<h3>le nombre des formations est {{ listeFormations|length }}</h3>
