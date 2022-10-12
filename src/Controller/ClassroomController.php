@@ -5,74 +5,75 @@ namespace App\Controller;
 use App\Entity\Classroom;
 use App\Form\ClassroomType;
 use App\Repository\ClassroomRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
-#[Route('/classroom')]
 class ClassroomController extends AbstractController
 {
-    #[Route('/', name: 'app_classroom_index', methods: ['GET'])]
-    public function index(ClassroomRepository $classroomRepository): Response
+    #[Route('/classroom', name: 'app_classroom')]
+    public function index(): Response
     {
         return $this->render('classroom/index.html.twig', [
-            'classrooms' => $classroomRepository->findAll(),
+            'controller_name' => 'ClassroomController',
         ]);
     }
 
-    #[Route('/new', name: 'app_classroom_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ClassroomRepository $classroomRepository): Response
+    #[Route('/list', name: 'app_classroom')]
+    public function list(ClassroomRepository $repository): Response
+    {
+        $list = $repository->findAll();
+        return $this->render('classroom/list.html.twig', [
+            'list' => $list,
+        ]);
+    }
+
+
+    #[Route('/add', name: 'add_classroom')]
+    public function add(ClassroomRepository $repository,ManagerRegistry $doctrine ,Request $request): Response
     {
         $classroom = new Classroom();
-        $form = $this->createForm(ClassroomType::class, $classroom);
+        $form = $this->createForm(ClassroomType::class,$classroom);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $classroomRepository->add($classroom, true);
-
-            return $this->redirectToRoute('app_classroom_index', [], Response::HTTP_SEE_OTHER);
+        if ($form->isSubmitted()){
+            $em = $doctrine->getManager();
+            $em->persist($classroom);
+            $em->flush();
+            return $this->redirectToRoute('app_classroom');
         }
-
-        return $this->renderForm('classroom/new.html.twig', [
-            'classroom' => $classroom,
+        return $this->renderForm('classroom/add.html.twig', [
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_classroom_show', methods: ['GET'])]
-    public function show(Classroom $classroom): Response
+    #[Route('/{id}/edit', name: 'edit_classroom')]
+    public function edit(ClassroomRepository $repository,ManagerRegistry $doctrine,$id,Request $request): Response
     {
-        return $this->render('classroom/show.html.twig', [
-            'classroom' => $classroom,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_classroom_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Classroom $classroom, ClassroomRepository $classroomRepository): Response
-    {
-        $form = $this->createForm(ClassroomType::class, $classroom);
+        $classroom = $repository->find($id);
+        $form = $this->createForm(ClassroomType::class,$classroom);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $classroomRepository->add($classroom, true);
-
-            return $this->redirectToRoute('app_classroom_index', [], Response::HTTP_SEE_OTHER);
+        if ($form->isSubmitted()){
+            $em = $doctrine->getManager();
+            $em->flush();
+            return $this->redirectToRoute('app_classroom');
         }
-
-        return $this->renderForm('classroom/edit.html.twig', [
-            'classroom' => $classroom,
+        return $this->renderForm('classroom/add.html.twig', [
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_classroom_delete', methods: ['POST'])]
-    public function delete(Request $request, Classroom $classroom, ClassroomRepository $classroomRepository): Response
+    #[Route('/{id}/delete', name: 'delete_classroom')]
+    public function delete(ClassroomRepository $repository,ManagerRegistry $doctrine,$id): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$classroom->getId(), $request->request->get('_token'))) {
-            $classroomRepository->remove($classroom, true);
-        }
+        $classroom = $repository->find($id);
+        $em = $doctrine->getManager();
+        $em->remove($classroom);
+        $em->flush();
+        return $this->redirectToRoute('app_classroom');
 
-        return $this->redirectToRoute('app_classroom_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
 }

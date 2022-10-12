@@ -1,35 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Classroom index{% endblock %}
+{% block title %}Hello ClassroomController!{% endblock %}
 
 {% block body %}
-    <h1>Classroom index</h1>
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for classroom in classrooms %}
-            <tr>
-                <td>{{ classroom.id }}</td>
-                <td>{{ classroom.name }}</td>
-                <td>
-                    <a href="{{ path('app_classroom_show', {'id': classroom.id}) }}">show</a>
-                    <a href="{{ path('app_classroom_edit', {'id': classroom.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
 
-    <a href="{{ path('app_classroom_new') }}">Create new</a>
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ '/home/ilyes/workshopsymfony-ilyes-slc/src/Controller/ClassroomController.php'|file_link(0) }}">src/Controller/ClassroomController.php</a></code></li>
+        <li>Your template at <code><a href="{{ '/home/ilyes/workshopsymfony-ilyes-slc/templates/classroom/index.html.twig'|file_link(0) }}">templates/classroom/index.html.twig</a></code></li>
+    </ul>
+</div>
 {% endblock %}

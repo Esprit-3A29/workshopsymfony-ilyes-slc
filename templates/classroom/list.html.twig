@@ -1,0 +1,8 @@
+{% for i in list %}
+{{ i.id }}
+{{ i.name }}
+    <a href="{{ path('edit_classroom',{'id': i.id})}}">edit</a>
+    <a href="{{ path('delete_classroom',{'id': i.id})}}">delete</a>
+    <br>
+{% endfor %}
+<a href="{{ path('add_classroom')}}">add</a>
